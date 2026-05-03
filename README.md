@@ -1,5 +1,5 @@
 # Concrete Impact & CDP Generation Tool
-link# https://github.com/arsalanmaa/cdp-diff-generator
+link# https://arsalanmaa.com/cdp_diff-generator/
 
 An advanced, web-based engineering utility for dynamic simulations. This tool automates the generation of Concrete Damaged Plasticity (CDP) data for Abaqus. 
 
