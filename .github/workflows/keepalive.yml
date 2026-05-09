@@ -1,0 +1,15 @@
+name: Keep Streamlit App Awake
+
+on:
+  schedule:
+    # Runs automatically every 12 hours
+    - cron: '0 */12 * * *'
+  # This allows you to also trigger the action manually from the Actions tab
+  workflow_dispatch: 
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Streamlit App
+        run: curl -sL "https://cdp-diff-generator-fukrvj7dmzkhz6yueppgfq.streamlit.app/" > /dev/null
