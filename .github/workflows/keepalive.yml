@@ -4,12 +4,44 @@ on:
   schedule:
     # Runs automatically every 12 hours
     - cron: '0 */12 * * *'
-  # This allows you to also trigger the action manually from the Actions tab
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping Streamlit App
-        run: curl -sL "https://cdp-diff-generator-fukrvj7dmzkhz6yueppgfq.streamlit.app/" > /dev/null
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          
+      - name: Install Browser Dependencies
+        run: |
+          pip install playwright
+          playwright install chromium
+          
+      - name: Visit and Wake Up App
+        run: |
+          python - <<EOF
+          from playwright.sync_api import sync_playwright
+          
+          with sync_playwright() as p:
+              browser = p.chromium.launch(headless=True)
+              page = browser.new_page()
+              print("Visiting Streamlit app...")
+              
+              # Go to the app
+              page.goto("https://cdp-diff-generator-fukrvj7dmzkhz6yueppgfq.streamlit.app/")
+              page.wait_for_timeout(5000) # Wait 5 seconds for page to load
+              
+              # Try to click the wake up button if it exists
+              try:
+                  wake_button = page.get_by_role("button", name="Yes, get this app back up!")
+                  wake_button.click(timeout=3000)
+                  print("App was asleep. Successfully clicked the wake up button!")
+                  page.wait_for_timeout(10000) # Wait 10 seconds for app to boot up
+              except:
+                  print("App is already awake and running normally!")
+                  
+              browser.close()
+          EOF
